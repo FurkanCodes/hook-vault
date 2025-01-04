@@ -17,7 +17,19 @@ function DocsSidebar({ className }: { className?: string }) {
   }, {} as Record<string, typeof hooks>);
 
   return (
-    <nav className={cn("p-4 border-r", className)}>
+    <nav
+      className={cn(
+        // Keep the sticky positioning and adjust spacing
+        "sticky top-16",
+        // Set a fixed height that accounts for the navbar
+        "h-[calc(100vh-64px)]", // 64px is the navbar height
+        // Add overflow scrolling for content that's too long
+        "overflow-y-auto",
+        // Keep your existing styles
+        "p-4 border-r",
+        className
+      )}
+    >
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
         {Object.entries(hooksByCategory).map(([category, categoryHooks]) => (
           <div key={category} className="mb-6">
