@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 
 interface LiveEditorProps {
   code: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onResult: (result: any) => void;
 }
 
@@ -31,10 +32,11 @@ export function LiveEditor({ code, onResult }: LiveEditorProps) {
         title: "Code executed successfully",
         variant: "default",
       });
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
       toast({
         title: "Error executing code",
-        description: error.message,
+
         variant: "destructive",
       });
     }
