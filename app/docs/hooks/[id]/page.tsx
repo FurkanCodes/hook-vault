@@ -1,7 +1,8 @@
 import { HookDocumentation } from "@/components/hook-documentation";
 import { hooks } from "@/lib/hooks";
 
-export default function HookPage({ params }: { params: { id: string } }) {
+export default async function HookPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const hook = hooks.find((h) => h.id === params.id);
 
   if (!hook) {
