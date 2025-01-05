@@ -6,7 +6,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-function Navigation() {
+function Navigation({ className }: { className?: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -28,7 +28,7 @@ function Navigation() {
   }, [isMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b  backdrop-blur">
+    <header className={cn("sticky top-0 z-50 w-full border-b  backdrop-blur", className)}>
       <nav className="flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-base font-bold">
