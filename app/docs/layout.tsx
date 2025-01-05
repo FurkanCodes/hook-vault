@@ -1,21 +1,25 @@
 import DocsSidebar from "@/components/docs-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
+import Navigation from "@/components/navigation";
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen relative">
-      {/* Mobile Sidebar */}
-      <MobileNav>
-        <DocsSidebar className="w-full md:hidden" />
-      </MobileNav>
+    <div className="flex min-h-screen flex-col">
+      <Navigation />
+      <div className="container flex-1">
+        <div className="grid grid-cols-[220px_1fr] gap-6">
+          {/* Mobile Sidebar */}
+          <MobileNav>
+            <DocsSidebar className="w-full md:hidden" />
+          </MobileNav>
 
-      {/* Desktop Sidebar */}
-      <DocsSidebar className="w-64 hidden md:block" />
+          {/* Desktop Sidebar */}
+          <DocsSidebar className="hidden lg:block" />
 
-      {/* Main Content */}
-      <main className="flex-1 px-4 py-8 md:px-6 mx-auto w-full">
-        <div className="max-w-4xl mx-auto">{children}</div>
-      </main>
+          {/* Main Content */}
+          <main className="relative py-6 lg:gap-10 lg:py-8 xl:grid">{children}</main>
+        </div>
+      </div>
     </div>
   );
 }

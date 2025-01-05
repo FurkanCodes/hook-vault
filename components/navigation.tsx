@@ -28,10 +28,10 @@ function Navigation() {
   }, [isMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b  backdrop-blur">
       <nav className="flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold">
+        <Link href="/" className="text-base font-bold">
           HookVault
         </Link>
 

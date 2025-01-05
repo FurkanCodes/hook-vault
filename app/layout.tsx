@@ -1,8 +1,8 @@
+import GrainyBackground from "@/components/grainy-background";
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "next-themes";
-import Navigation from "@/components/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,10 +29,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <Navigation />
-            {children}
-          </div>
+          <GrainyBackground>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              {/* <Navigation /> */}
+              {children}
+            </div>
+          </GrainyBackground>
         </ThemeProvider>
       </body>
     </html>
