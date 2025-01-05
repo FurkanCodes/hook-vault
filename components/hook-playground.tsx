@@ -1,43 +1,53 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
-
-import { CodeBlock } from "@/components/code-block";
-
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Hook } from "@/types/types";
-import { LiveEditor } from "./live-editor";
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import { Card } from "./ui/card";
+function generateSandpackCode(hook: Hook): string {
+  return `import React from 'react';
+import {useState, useEffect, useRef, useCallback} from 'react';
+// Hook Definition
+${hook.code}
 
-export function HookPlayground({ hook }: { hook: Hook }) {
-  const [result, setResult] = useState<any>(null);
+// Example Usage
 
+  ${
+    hook.examples?.[0]?.code ||
+    `
+
+  `
+  }
+`;
+}
+
+interface HookPlaygroundProps {
+  hook: Hook;
+}
+export function HookPlayground({ hook }: HookPlaygroundProps) {
+  console.log("hook?.codeSandbox", hook?.codeSandbox);
   return (
     <Card className="p-6">
       <Tabs defaultValue="editor">
         <TabsList className="mb-4">
           <TabsTrigger value="editor">Live Editor</TabsTrigger>
-          <TabsTrigger value="examples">Examples</TabsTrigger>
-          <TabsTrigger value="result">Result</TabsTrigger>
         </TabsList>
 
         <TabsContent value="editor">
-          <LiveEditor code={hook.code} onResult={setResult} />
-        </TabsContent>
-
-        <TabsContent value="examples">
-          <div className="space-y-4">
-            {hook.examples.map((example, index) => (
-              <div key={index}>
-                <h3 className="text-lg font-medium mb-2">{example.title}</h3>
-                <p className="text-muted-foreground mb-2">{example.description}</p>
-                <CodeBlock code={example.code} />
-              </div>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="result">
-          <pre className="p-4 bg-muted rounded-lg">{JSON.stringify(result, null, 2)}</pre>
+          <Sandpack
+            template="react-ts"
+            files={{
+              "/App.tsx": generateSandpackCode(hook),
+              "/styles.css": `
+                .app {
+                  padding: 1rem;
+                }
+              `,
+            }}
+            theme="dark"
+            options={{
+              showNavigator: true,
+              showTabs: true,
+            }}
+          />
         </TabsContent>
       </Tabs>
     </Card>

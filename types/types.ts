@@ -11,6 +11,7 @@ export interface Hook {
   pitfalls: string[];
   examples: Example[];
   performance: string[];
+  codeSandbox?: Example[];
 }
 
 export type HookCategory = "State" | "Effect" | "Performance" | "Custom" | "Layout" | "Debug";

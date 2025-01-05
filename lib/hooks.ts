@@ -53,7 +53,44 @@ export const hooks: Hook[] = [
       {
         title: "Basic Usage",
         description: "Store and retrieve a simple value",
-        code: `const [value, setValue] = useLocalStorage('my-key', 'initial');`,
+        code: `type Theme = 'light' | 'dark';
+
+export default function App() {
+  const [theme, setTheme] = useLocalStorage<Theme>('theme', 'light');
+
+  const toggleTheme = () => {
+    setTheme(currentTheme => currentTheme === 'light' ? 'dark' : 'light');
+  };
+
+  return (
+    <div style={{
+      padding: '20px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#333333',
+      color: theme === 'light' ? '#333333' : '#ffffff',
+      minHeight: '100vh',
+      transition: 'all 0.3s ease'
+    }}>
+      <h1>Theme Switcher</h1>
+      <p>Current theme: {theme}</p>
+      <p>This preference will persist even after you refresh the page!</p>
+
+      <button
+        onClick={toggleTheme}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: theme === 'light' ? '#333333' : '#ffffff',
+          color: theme === 'light' ? '#ffffff' : '#333333',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}
+      >
+        Switch to {theme === 'light' ? 'dark' : 'light'} theme
+      </button>
+    </div>
+  );
+};
+`,
       },
     ],
     performance: ["Minimal impact on performance for small values", "Consider using sessionStorage for temporary data", "Large objects might impact performance during saves"],
@@ -103,23 +140,25 @@ export const hooks: Hook[] = [
       {
         title: "Search Input",
         description: "Debounce search input to reduce API calls",
-        code: `function SearchComponent() {
-  const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 500);
-
-  useEffect(() => {
-    // API call here
-    console.log('Searching:', debouncedSearch);
-  }, [debouncedSearch]);
+        code: `
+export default function App()  {
+  const [text, setText] = useState('');
+  const debouncedText = useDebounce(text, 1000);
 
   return (
-    <input
-      type="text"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-    />
+    <div>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Start typing..."
+      />
+      <p>Current length: {text.length}</p>
+      <p>Debounced length: {debouncedText.length}</p>
+
+    </div>
   );
-}`,
+}
+`,
       },
     ],
     performance: ["Minimal memory overhead", "Reduces number of state updates", "Prevents unnecessary re-renders"],
@@ -129,7 +168,7 @@ export const hooks: Hook[] = [
     name: "useDebounceCallback",
     category: "Performance",
     description: "A hook that debounces a callback function to limit its execution frequency",
-    code: `import { useCallback, useRef, useEffect } from "react";
+    code: `
 
   export function useDebounceCallback<T extends (...args: any[]) => any>(
     callback: T,
@@ -176,22 +215,35 @@ export const hooks: Hook[] = [
       {
         title: "Search Input with API Calls",
         description: "Debounce API calls when user types in search input",
-        code: `function SearchComponent() {
-    const searchApi = async (query: string) => {
-      const results = await fetch(\`/api/search?q=\${query}\`);
-      return results.json();
-    };
+        code: `export default function App() {
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
 
-    const debouncedSearch = useDebounceCallback(searchApi, 500);
+  const handleResize = useDebounceCallback(() => {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+    console.log('Window resized!'); // To see when the callback actually fires
+  }, 500);
 
-    return (
-      <input
-        type="text"
-        onChange={(e) => debouncedSearch(e.target.value)}
-        placeholder="Search..."
-      />
-    );
-  }`,
+  // Attach the event listener
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
+
+  return (
+    <div>
+      <h3>Try resizing your window!</h3>
+      <p>Width: {windowSize.width}px</p>
+      <p>Height: {windowSize.height}px</p>
+
+    </div>
+  );
+}`,
       },
     ],
     performance: ["Prevents excessive function calls", "Minimal memory usage with proper cleanup", "No unnecessary re-renders", "Efficient handling of rapidly changing values"],
@@ -250,13 +302,41 @@ export const hooks: Hook[] = [
       {
         title: "Lazy Loading Images",
         description: "Load images only when they come into view",
-        code: `function LazyImage({ src, alt }: { src: string; alt: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useIntersectionObserver(ref);
+        code: `export default function App() {
+   const elementRef = useRef<HTMLDivElement>(null);
+  const isVisible = useIntersectionObserver(elementRef, {
+    threshold: 0.2,
+    rootMargin: '50px'
+  });
 
   return (
-    <div ref={ref}>
-      {isVisible && <img src={src} alt={alt} />}
+    <div className="app">
+      {/* Spacer to enable scrolling */}
+      <div style={{ height: '100vh' }}>
+        <h1>Scroll down to see the effect</h1>
+      </div>
+
+      {/* Element being observed */}
+      <div
+        ref={elementRef}
+        style={{
+          minHeight: '300px',
+          backgroundColor: '#f0f0f0',
+          transition: 'all 0.5s ease-in-out',
+          transform: isVisible ? 'translateY(0)' : 'translateY(100px)',
+          opacity: isVisible ? 1 : 0,
+          padding: '20px',
+          margin: '20px'
+        }}
+      >
+        <h2>Animated Content</h2>
+        <p>This section will fade in and slide up when it becomes visible.</p>
+      </div>
+
+      {/* Additional content */}
+      <div style={{ height: '100vh' }}>
+        <h1>Scroll up to see the effect again</h1>
+      </div>
     </div>
   );
 }`,
@@ -306,15 +386,23 @@ export const hooks: Hook[] = [
       {
         title: "Responsive Layout",
         description: "Adapt layout based on screen size",
-        code: `function ResponsiveComponent() {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+        code: `export default function App() {
+    const isSmall = useMediaQuery('(max-width: 400px)');
+  const isMedium = useMediaQuery('(min-width: 401px) and (max-width: 800px)');
 
   return (
-    <div>
-      {isMobile ? <MobileView /> : <DesktopView />}
+    <div style={{
+      padding: '20px',
+      textAlign: 'center'
+    }}>
+      <h3>Resize the window!</h3>
+      {isSmall && <p>👋 Hello mobile user!</p>}
+      {isMedium && <p>👨‍💻 Hello tablet user!</p>}
+      {!isSmall && !isMedium && <p>🖥️ Hello desktop user!</p>}
     </div>
   );
-}`,
+}
+`,
       },
     ],
     performance: ["Minimal overhead", "Efficient event listener management", "Automatic cleanup"],
@@ -391,37 +479,55 @@ export const hooks: Hook[] = [
       {
         title: "Basic Form",
         description: "Simple form with validation",
-        code: `function LoginForm() {
-  const { values, errors, handleChange, handleSubmit } = useForm(
-    { email: '', password: '' },
-    (values) => {
-      const errors: any = {};
-      if (!values.email) errors.email = 'Required';
-      if (!values.password) errors.password = 'Required';
-      return errors;
+        code: `export default function App() {
+  const validate = (values) => {
+    const errors = {};
+    if (values.username.length < 3) {
+      errors.username = 'Too short';
     }
+    if (!values.email.includes('@')) {
+      errors.email = 'Invalid email';
+    }
+    return errors;
+  };
+
+  const { values, errors, handleChange, handleSubmit } = useForm(
+    {
+      username: '',
+      email: ''
+    },
+    validate
   );
 
   return (
-    <form onSubmit={handleSubmit((values) => console.log(values))}>
-      <input
-        type="email"
-        value={values.email}
-        onChange={(e) => handleChange('email', e.target.value)}
-      />
-      {errors.email && <span>{errors.email}</span>}
+    <form onSubmit={handleSubmit((values) => alert(JSON.stringify(values, null, 2)))}>
+      <div style={{ marginBottom: '10px' }}>
+        <input
+          placeholder="Username"
+          value={values.username}
+          onChange={(e) => handleChange('username', e.target.value)}
+        />
+        {errors.username && (
+          <div style={{ color: 'red', fontSize: '12px' }}>{errors.username}</div>
+        )}
+      </div>
 
-      <input
-        type="password"
-        value={values.password}
-        onChange={(e) => handleChange('password', e.target.value)}
-      />
-      {errors.password && <span>{errors.password}</span>}
+      <div style={{ marginBottom: '10px' }}>
+        <input
+          placeholder="Email"
+          value={values.email}
+          onChange={(e) => handleChange('email', e.target.value)}
+        />
+        {errors.email && (
+          <div style={{ color: 'red', fontSize: '12px' }}>{errors.email}</div>
+        )}
+      </div>
 
-      <button type="submit">Submit</button>
+      <button type="submit">Sign Up</button>
     </form>
   );
-}`,
+}
+`,
       },
     ],
     performance: ["Efficient form state updates", "Optimized validation timing", "Minimal re-renders"],

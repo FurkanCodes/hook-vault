@@ -2,6 +2,7 @@
 import { CodeBlock } from "@/components/code-block";
 import { Hook } from "@/types/types";
 import { motion } from "framer-motion";
+import { HookPlayground } from "./hook-playground";
 
 interface HookDocumentationProps {
   hook: Hook;
@@ -44,7 +45,10 @@ export function HookDocumentation({ hook }: HookDocumentationProps) {
           </div>
         ))}
       </section>
-
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Interactive Playground</h2>
+        <HookPlayground hook={hook} />
+      </section>
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Best Practices</h2>
         <ul className="list-disc pl-6 space-y-2">
