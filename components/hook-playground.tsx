@@ -23,7 +23,7 @@ interface HookPlaygroundProps {
   hook: Hook;
 }
 export function HookPlayground({ hook }: HookPlaygroundProps) {
-  console.log("hook?.codeSandbox", hook?.codeSandbox);
+  console.log("hook?.codeSandbox", hook);
   return (
     <Card className="p-6">
       <Tabs defaultValue="editor">

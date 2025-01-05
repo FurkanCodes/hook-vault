@@ -1,0 +1,156 @@
+---
+title: "useDebounceCallback"
+date: "2024-01-05"
+description: "A hook that debounces a callback function to limit its execution frequency"
+category: "Performance"
+tags:
+  - React Hooks
+  - Performance Optimization
+---
+
+# useDebounceCallback
+
+A hook that debounces a callback function to limit its execution frequency. This custom hook provides a way to optimize performance by controlling how often a function is executed.
+
+## Implementation
+
+<CodeBlock
+  code={`export function useDebounceCallback<T extends (...args: any[]) => any>(
+    callback: T,
+    delay: number
+  ): (...args: Parameters<T>) => void {
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const callbackRef = useRef(callback);
+
+    useEffect(() => {
+      callbackRef.current = callback;
+    }, [callback]);
+
+    return useCallback((...args: Parameters<T>) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        callbackRef.current(...args);
+      }, delay);
+    }, [delay]);
+
+}`}
+language="typescript"
+/>
+
+## Usage
+
+<ExampleBlock
+  description="Debounce API calls when user types in search input"
+  code={`export default function App() {
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+
+const handleResize = useDebounceCallback(() => {
+setWindowSize({
+width: window.innerWidth,
+height: window.innerHeight
+});
+console.log('Window resized!'); // To see when the callback actually fires
+}, 500);
+
+// Attach the event listener
+useEffect(() => {
+window.addEventListener('resize', handleResize);
+return () => window.removeEventListener('resize', handleResize);
+}, [handleResize]);
+
+return (
+<div>
+<h3>Try resizing your window!</h3>
+<p>Width: {windowSize.width}px</p>
+<p>Height: {windowSize.height}px</p>
+</div>
+);
+}`}
+/>
+
+## Parameters
+
+<ParameterList>
+  <Parameter name="callback" type="T extends (...args: any[]) => any" required description="The function to debounce" />
+  <Parameter name="delay" type="number" required description="The delay in milliseconds before executing the callback" />
+</ParameterList>
+
+## Live Playground
+
+<HookPlayground hook={{
+  code: `export function useDebounceCallback<T extends (...args: any[]) => any>(
+    callback: T,
+    delay: number
+  ): (...args: Parameters<T>) => void {
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const callbackRef = useRef(callback);
+
+    useEffect(() => {
+      callbackRef.current = callback;
+    }, [callback]);
+
+    return useCallback((...args: Parameters<T>) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        callbackRef.current(...args);
+      }, delay);
+    }, [delay]);
+
+}`,
+  examples: [{
+    code: `export default function App() {
+const [windowSize, setWindowSize] = useState({
+width: window.innerWidth,
+height: window.innerHeight
+});
+
+const handleResize = useDebounceCallback(() => {
+setWindowSize({
+width: window.innerWidth,
+height: window.innerHeight
+});
+console.log('Window resized!');
+}, 500);
+
+useEffect(() => {
+window.addEventListener('resize', handleResize);
+return () => window.removeEventListener('resize', handleResize);
+}, [handleResize]);
+
+return (
+<div>
+<h3>Try resizing your window!</h3>
+<p>Width: {windowSize.width}px</p>
+<p>Height: {windowSize.height}px</p>
+</div>
+);
+}`
+}]
+}} />
+
+## Best Practices
+
+<BestPractices>
+  <BestPracticeItem>Clean up timeouts when component unmounts</BestPracticeItem>
+  <BestPracticeItem>Use refs to store latest callback value</BestPracticeItem>
+  <BestPracticeItem>Keep delay values consistent to prevent unnecessary re-renders</BestPracticeItem>
+  <BestPracticeItem>Consider using useCallback for the input function</BestPracticeItem>
+</BestPractices>
+
+## Performance
+
+<Performance>
+  <PerformanceItem>Prevents excessive function calls</PerformanceItem>
+  <PerformanceItem>Minimal memory usage with proper cleanup</PerformanceItem>
+  <PerformanceItem>No unnecessary re-renders</PerformanceItem>
+  <PerformanceItem>Efficient handling of rapidly changing values</PerformanceItem>
+</Performance>
+
+---

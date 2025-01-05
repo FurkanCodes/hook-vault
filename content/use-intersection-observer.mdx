@@ -1,0 +1,178 @@
+---
+title: "useIntersectionObserver"
+date: "2024-01-05"
+description: "A hook for tracking element visibility in the viewport"
+category: "Layout"
+tags:
+  - React Hooks
+  - Layout
+  - Intersection Observer
+---
+
+# useIntersectionObserver
+
+A hook for tracking element visibility in the viewport. This custom hook provides a way to detect when an element enters or leaves the viewport, enabling features like lazy loading and infinite scrolling.
+
+## Implementation
+
+<CodeBlock
+  code={`function useIntersectionObserver(
+  elementRef: RefObject<Element>,
+  options: IntersectionObserverInit = {}
+): boolean {
+  const [isVisible, setIsVisible] = useState(false);
+
+useEffect(() => {
+const element = elementRef.current;
+if (!element) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    }, options);
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+
+}, [elementRef, options]);
+
+return isVisible;
+}`}
+language="typescript"
+/>
+
+## Usage
+
+<ExampleBlock
+  description="Load images only when they come into view"
+  code={`export default function App() {
+   const elementRef = useRef<HTMLDivElement>(null);
+  const isVisible = useIntersectionObserver(elementRef, {
+    threshold: 0.2,
+    rootMargin: '50px'
+  });
+
+return (
+<div className="app">
+<div style={{ height: '100vh' }}>
+<h1>Scroll down to see the effect</h1>
+</div>
+
+      <div
+        ref={elementRef}
+        style={{
+          minHeight: '300px',
+          backgroundColor: '#f0f0f0',
+          transition: 'all 0.5s ease-in-out',
+          transform: isVisible ? 'translateY(0)' : 'translateY(100px)',
+          opacity: isVisible ? 1 : 0,
+          padding: '20px',
+          margin: '20px'
+        }}
+      >
+        <h2>Animated Content</h2>
+        <p>This section will fade in and slide up when it becomes visible.</p>
+      </div>
+
+      <div style={{ height: '100vh' }}>
+        <h1>Scroll up to see the effect again</h1>
+      </div>
+    </div>
+
+);
+}`}
+/>
+
+## Parameters
+
+<ParameterList>
+  <Parameter name="elementRef" type="RefObject<Element>" required description="Reference to the element to observe" />
+  <Parameter name="options" type="IntersectionObserverInit" required={false} description="IntersectionObserver options" />
+</ParameterList>
+
+## Live Playground
+
+<HookPlayground hook={{
+  code: `function useIntersectionObserver(
+  elementRef: RefObject<Element>,
+  options: IntersectionObserverInit = {}
+): boolean {
+  const [isVisible, setIsVisible] = useState(false);
+
+useEffect(() => {
+const element = elementRef.current;
+if (!element) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    }, options);
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+
+}, [elementRef, options]);
+
+return isVisible;
+}`,
+  examples: [{
+    code: `export default function App() {
+const elementRef = useRef<HTMLDivElement>(null);
+const isVisible = useIntersectionObserver(elementRef, {
+threshold: 0.2,
+rootMargin: '50px'
+});
+
+return (
+<div className="app">
+<div style={{ height: '100vh' }}>
+<h1>Scroll down to see the effect</h1>
+</div>
+
+      <div
+        ref={elementRef}
+        style={{
+          minHeight: '300px',
+          backgroundColor: '#f0f0f0',
+          transition: 'all 0.5s ease-in-out',
+          transform: isVisible ? 'translateY(0)' : 'translateY(100px)',
+          opacity: isVisible ? 1 : 0,
+          padding: '20px',
+          margin: '20px'
+        }}
+      >
+        <h2>Animated Content</h2>
+        <p>This section will fade in and slide up when it becomes visible.</p>
+      </div>
+
+      <div style={{ height: '100vh' }}>
+        <h1>Scroll up to see the effect again</h1>
+      </div>
+    </div>
+
+);
+}`
+}]
+}} />
+
+## Best Practices
+
+<BestPractices>
+  <BestPracticeItem>Use appropriate threshold values for your use case</BestPracticeItem>
+  <BestPracticeItem>Consider using root margins for earlier/later triggers</BestPracticeItem>
+  <BestPracticeItem>Clean up observers when component unmounts</BestPracticeItem>
+</BestPractices>
+
+## Performance
+
+<Performance>
+  <PerformanceItem>Efficient viewport tracking</PerformanceItem>
+  <PerformanceItem>Minimal impact on main thread</PerformanceItem>
+  <PerformanceItem>Automatic cleanup of observers</PerformanceItem>
+</Performance>
+
+---

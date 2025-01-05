@@ -1,0 +1,248 @@
+---
+title: "useForm"
+date: "2024-01-05"
+description: "A hook for form state management and validation"
+category: "Form"
+tags:
+  - React Hooks
+  - Forms
+  - Validation
+---
+
+# useForm
+
+A hook for form state management and validation. This custom hook provides a comprehensive solution for handling form state, validation, and submission in React applications.
+
+## Implementation
+
+<CodeBlock
+  code={`function useForm<T extends Record<string, any>>(
+  initialValues: T,
+  validate?: (values: T) => Partial<Record<keyof T, string>>
+) {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof T, boolean>>>({});
+
+  const handleChange = (name: keyof T, value: any) => {
+    setValues(prev => ({ ...prev, [name]: value }));
+    if (validate) {
+      const validationErrors = validate({ ...values, [name]: value });
+      setErrors(prev => ({ ...prev, [name]: validationErrors[name] }));
+    }
+  };
+
+  const handleBlur = (name: keyof T) => {
+    setTouched(prev => ({ ...prev, [name]: true }));
+  };
+
+  const handleSubmit = (onSubmit: (values: T) => void) => (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate) {
+      const validationErrors = validate(values);
+      setErrors(validationErrors);
+      if (Object.keys(validationErrors).length === 0) {
+        onSubmit(values);
+      }
+    } else {
+      onSubmit(values);
+    }
+  };
+
+  return {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  };
+}`}
+language="typescript"
+/>
+
+## Usage
+
+<ExampleBlock
+  description="Simple form with validation"
+  code={`export default function App() {
+  const validate = (values) => {
+    const errors = {};
+    if (values.username.length < 3) {
+      errors.username = 'Too short';
+    }
+    if (!values.email.includes('@')) {
+      errors.email = 'Invalid email';
+    }
+    return errors;
+  };
+
+  const { values, errors, handleChange, handleSubmit } = useForm(
+    {
+      username: '',
+      email: ''
+    },
+    validate
+  );
+
+  return (
+    <form onSubmit={handleSubmit((values) => alert(JSON.stringify(values, null, 2)))}>
+      <div style={{ marginBottom: '10px' }}>
+        <input
+          placeholder="Username"
+          value={values.username}
+          onChange={(e) => handleChange('username', e.target.value)}
+        />
+        {errors.username && (
+          <div style={{ color: 'red', fontSize: '12px' }}>{errors.username}</div>
+        )}
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <input
+          placeholder="Email"
+          value={values.email}
+          onChange={(e) => handleChange('email', e.target.value)}
+        />
+        {errors.email && (
+          <div style={{ color: 'red', fontSize: '12px' }}>{errors.email}</div>
+        )}
+      </div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+  );
+}`}
+/>
+
+## Parameters
+
+<ParameterList>
+  <Parameter
+    name="initialValues"
+    type="T"
+    required
+    description="Initial form values"
+  />
+  <Parameter
+    name="validate"
+    type="(values: T) => Partial<Record<keyof T, string>>"
+    required={false}
+    description="Validation function"
+  />
+</ParameterList>
+
+## Live Playground
+
+<HookPlayground hook={{
+  code: `function useForm<T extends Record<string, any>>(
+  initialValues: T,
+  validate?: (values: T) => Partial<Record<keyof T, string>>
+) {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof T, boolean>>>({});
+
+  const handleChange = (name: keyof T, value: any) => {
+    setValues(prev => ({ ...prev, [name]: value }));
+    if (validate) {
+      const validationErrors = validate({ ...values, [name]: value });
+      setErrors(prev => ({ ...prev, [name]: validationErrors[name] }));
+    }
+  };
+
+  const handleBlur = (name: keyof T) => {
+    setTouched(prev => ({ ...prev, [name]: true }));
+  };
+
+  const handleSubmit = (onSubmit: (values: T) => void) => (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate) {
+      const validationErrors = validate(values);
+      setErrors(validationErrors);
+      if (Object.keys(validationErrors).length === 0) {
+        onSubmit(values);
+      }
+    } else {
+      onSubmit(values);
+    }
+  };
+
+  return {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  };
+}`,
+  examples: [{
+    code: `export default function App() {
+  const validate = (values) => {
+    const errors = {};
+    if (values.username.length < 3) {
+      errors.username = 'Too short';
+    }
+    if (!values.email.includes('@')) {
+      errors.email = 'Invalid email';
+    }
+    return errors;
+  };
+
+  const { values, errors, handleChange, handleSubmit } = useForm(
+    {
+      username: '',
+      email: ''
+    },
+    validate
+  );
+
+  return (
+    <form onSubmit={handleSubmit((values) => alert(JSON.stringify(values, null, 2)))}>
+      <div style={{ marginBottom: '10px' }}>
+        <input
+          placeholder="Username"
+          value={values.username}
+          onChange={(e) => handleChange('username', e.target.value)}
+        />
+        {errors.username && (
+          <div style={{ color: 'red', fontSize: '12px' }}>{errors.username}</div>
+        )}
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <input
+          placeholder="Email"
+          value={values.email}
+          onChange={(e) => handleChange('email', e.target.value)}
+        />
+        {errors.email && (
+          <div style={{ color: 'red', fontSize: '12px' }}>{errors.email}</div>
+        )}
+      </div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+  );
+}`
+  }]
+}} />
+
+## Best Practices
+
+<BestPractices>
+  <BestPracticeItem>Define validation schema upfront</BestPracticeItem>
+  <BestPracticeItem>Handle all form fields consistently</BestPracticeItem>
+  <BestPracticeItem>Use with TypeScript for type safety</BestPracticeItem>
+</BestPractices>
+
+## Performance
+
+<Performance>
+  <PerformanceItem>Efficient form state updates</PerformanceItem>
+  <PerformanceItem>Optimized validation timing</PerformanceItem>
+  <PerformanceItem>Minimal re-renders</PerformanceItem>
+</Performance>
+
+---

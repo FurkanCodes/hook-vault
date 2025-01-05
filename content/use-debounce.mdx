@@ -1,0 +1,123 @@
+---
+title: "useDebounce"
+date: "2024-01-05"
+description: "A hook for debouncing values to optimize performance"
+category: "Performance"
+tags:
+  - React Hooks
+  - Performance Optimization
+---
+
+# useDebounce
+
+A hook for debouncing values to optimize performance. This custom hook provides a convenient way to optimize performance by limiting the rate at which a function is called.
+
+## Implementation
+
+<CodeBlock
+  code={`function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+useEffect(() => {
+const handler = setTimeout(() => {
+setDebouncedValue(value);
+}, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+
+}, [value, delay]);
+
+return debouncedValue;
+}`}
+language="typescript"
+/>
+
+## Usage
+
+<ExampleBlock
+  description="Debounce search input values"
+  code={`export default function App()  {
+    const [text, setText] = useState('');
+    const debouncedText = useDebounce(text, 1000);
+
+    return (
+      <div>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Start typing..."
+        />
+        <p>Current length: {text.length}</p>
+        <p>Debounced length: {debouncedText.length}</p>
+      </div>
+    );
+
+}`}
+/>
+
+## Parameters
+
+<ParameterList>
+  <Parameter name="value" type="T" required description="The value to debounce" />
+  <Parameter name="delay" type="number" required description="The delay in milliseconds" />
+</ParameterList>
+
+## Live Playground
+
+<HookPlayground hook={{
+  code: `function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+
+      return () => {
+        clearTimeout(handler);
+      };
+    }, [value, delay]);
+
+    return debouncedValue;
+
+}`,
+  examples: [{
+    code: `export default function App() {
+const [text, setText] = useState('');
+const debouncedText = useDebounce(text, 1000);
+
+      return (
+        <div>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Start typing..."
+          />
+          <p>Current length: {text.length}</p>
+          <p>Debounced length: {debouncedText.length}</p>
+        </div>
+      );
+    }`
+
+}]
+}} />
+
+## Best Practices
+
+<BestPractices>
+  <BestPracticeItem>Choose an appropriate delay based on your use case</BestPracticeItem>
+  <BestPracticeItem>Consider using a longer delay for expensive operations</BestPracticeItem>
+  <BestPracticeItem>Use in conjunction with useCallback for event handlers</BestPracticeItem>
+</BestPractices>
+
+## Performance
+
+<Performance>
+  <PerformanceItem>Minimal memory overhead</PerformanceItem>
+  <PerformanceItem>Reduces number of state updates</PerformanceItem>
+  <PerformanceItem>Prevents unnecessary re-renders</PerformanceItem>
+</Performance>
+
+---

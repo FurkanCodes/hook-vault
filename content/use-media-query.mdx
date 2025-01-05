@@ -1,0 +1,127 @@
+---
+title: "useMediaQuery"
+date: "2024-01-05"
+description: "A hook for responsive design using media queries"
+category: "Layout"
+tags:
+  - React Hooks
+  - Layout
+  - Responsive Design
+---
+
+# useMediaQuery
+
+A hook for responsive design using media queries. This custom hook provides a way to adapt your components based on screen size and device characteristics.
+
+## Implementation
+
+<CodeBlock
+  code={`function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+useEffect(() => {
+const media = window.matchMedia(query);
+setMatches(media.matches);
+
+    const listener = (event: MediaQueryListEvent) => {
+      setMatches(event.matches);
+    };
+
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+
+}, [query]);
+
+return matches;
+}`}
+language="typescript"
+/>
+
+## Usage
+
+<ExampleBlock
+  description="Adapt layout based on screen size"
+  code={`export default function App() {
+    const isSmall = useMediaQuery('(max-width: 400px)');
+    const isMedium = useMediaQuery('(min-width: 401px) and (max-width: 800px)');
+
+    return (
+      <div style={{
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <h3>Resize the window!</h3>
+        {isSmall && <p>👋 Hello mobile user!</p>}
+        {isMedium && <p>👨‍💻 Hello tablet user!</p>}
+        {!isSmall && !isMedium && <p>🖥️ Hello desktop user!</p>}
+      </div>
+    );
+
+}`}
+/>
+
+## Parameters
+
+<ParameterList>
+  <Parameter name="query" type="string" required description="Media query string" />
+</ParameterList>
+
+## Live Playground
+
+<HookPlayground hook={{
+  code: `function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+useEffect(() => {
+const media = window.matchMedia(query);
+setMatches(media.matches);
+
+    const listener = (event: MediaQueryListEvent) => {
+      setMatches(event.matches);
+    };
+
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+
+}, [query]);
+
+return matches;
+}`,
+  examples: [{
+    code: `export default function App() {
+const isSmall = useMediaQuery('(max-width: 400px)');
+const isMedium = useMediaQuery('(min-width: 401px) and (max-width: 800px)');
+
+    return (
+      <div style={{
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <h3>Resize the window!</h3>
+        {isSmall && <p>👋 Hello mobile user!</p>}
+        {isMedium && <p>👨‍💻 Hello tablet user!</p>}
+        {!isSmall && !isMedium && <p>🖥️ Hello desktop user!</p>}
+      </div>
+    );
+
+}`
+}]
+}} />
+
+## Best Practices
+
+<BestPractices>
+  <BestPracticeItem>Use standard media query syntax</BestPracticeItem>
+  <BestPracticeItem>Consider performance with multiple queries</BestPracticeItem>
+  <BestPracticeItem>Combine with useCallback for event handlers</BestPracticeItem>
+</BestPractices>
+
+## Performance
+
+<Performance>
+  <PerformanceItem>Minimal overhead</PerformanceItem>
+  <PerformanceItem>Efficient event listener management</PerformanceItem>
+  <PerformanceItem>Automatic cleanup</PerformanceItem>
+</Performance>
+
+---
