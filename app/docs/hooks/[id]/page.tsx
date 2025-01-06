@@ -1,14 +1,15 @@
 import CustomMDX from "@/components/mdx";
 import { getAllHooks } from "@/lib/mdx";
+import { Metadata } from "@/types/types";
 
 type Hook = {
   slug: string;
-  metadata: any;
+  metadata: Metadata;
   content: string;
 };
 
 export default async function HookPage(props: { params: { id: string } }) {
-  const params = await props.params;
+  const params = props.params;
 
   const slugString = Array.isArray(params.id) ? params.id.join("/") : params.id;
 console.log("slugString",slugString

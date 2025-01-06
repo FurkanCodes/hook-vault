@@ -2,11 +2,8 @@ import DocsSidebar from "@/components/docs-sidebar";
 import Footer from "@/components/footer";
 import { MobileNav } from "@/components/mobile-nav";
 import Navigation from "@/components/navigation";
-import { getAllHooks } from "@/lib/mdx";
 
 export default async function DocsLayout({ children }: { children: React.ReactNode }) {
-  // Fetch all hooks (await the promise)
-  const hooks = await getAllHooks();
 
   return (
     <div className="flex flex-col min-h-screen">
