@@ -2,8 +2,7 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { motion } from "framer-motion";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { highlight } from "sugar-high";
 
 interface CodeBlockProps {
   code: string;
@@ -19,22 +18,23 @@ export function CodeBlock({ code, language = "typescript" }: CodeBlockProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Use sugar-high to highlight the code
+  const highlightedCode = highlight(code);
+
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative rounded-lg overflow-hidden my-4">
-      <button onClick={copyToClipboard} className="absolute right-2 top-2 p-2 rounded-md bg-background/10 hover:bg-background/20 transition-colors">
-        {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+      <button onClick={copyToClipboard} className="absolute right-8 top-8 p-2 rounded-md bg-background/10 hover:bg-background/20 transition-colors dark:bg-[#151550]" >
+        {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4 text-white " />}
       </button>
-      <SyntaxHighlighter
-        language={language}
-        style={coldarkDark}
-        customStyle={{
-          margin: 0,
-          padding: "1.5rem",
-          borderRadius: "0.5rem",
-        }}
-      >
-        {code}
-      </SyntaxHighlighter>
+     
+      <pre className="p-4  text-sm text-white overflow-x-auto rounded-lg">
+        <code
+          className={`language-${language}`}
+          dangerouslySetInnerHTML={{ __html: highlightedCode }}
+        />
+      </pre>
     </motion.div>
   );
 }
+
+

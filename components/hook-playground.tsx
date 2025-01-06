@@ -1,7 +1,15 @@
-import { Hook } from "@/types/types";
-import { Sandpack } from "@codesandbox/sandpack-react";
+"use client";
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
 import { Card } from "./ui/card";
+import { Hook } from "@/types/types";
+
+const Sandpack = dynamic(
+  () => import("@codesandbox/sandpack-react").then((mod) => mod.Sandpack),
+  { ssr: false }
+);
+
 function generateSandpackCode(hook: Hook): string {
   return `import React from 'react';
 import {useState, useEffect, useRef, useCallback} from 'react';
@@ -9,21 +17,17 @@ import {useState, useEffect, useRef, useCallback} from 'react';
 ${hook.code}
 
 // Example Usage
-
-  ${
-    hook.examples?.[0]?.code ||
-    `
-
-  `
-  }
+${hook.examples?.[0]?.code || ""}
 `;
 }
 
 interface HookPlaygroundProps {
   hook: Hook;
 }
+
 export function HookPlayground({ hook }: HookPlaygroundProps) {
-  console.log("hook?.codeSandbox", hook);
+  const sandpackCode = useMemo(() => generateSandpackCode(hook), [hook]);
+
   return (
     <Card className="p-6">
       <Tabs defaultValue="editor">
@@ -35,7 +39,7 @@ export function HookPlayground({ hook }: HookPlaygroundProps) {
           <Sandpack
             template="react-ts"
             files={{
-              "/App.tsx": generateSandpackCode(hook),
+              "/App.tsx": sandpackCode,
               "/styles.css": `
                 .app {
                   padding: 1rem;

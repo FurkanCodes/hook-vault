@@ -30,6 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 4.9%;
     --foreground: 0 0% 98%;
@@ -55,6 +56,164 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+}
+
+/* Sugar High Syntax Highlighting Theme */
+:root {
+  --sh-class: #4EC9B0; /* Class names (e.g., `class MyClass`) */
+  --sh-identifier: #9CDCFE; /* Identifiers (e.g., variable names) */
+  --sh-keyword: #569CD6; /* Keywords (e.g., `function`, `return`) */
+  --sh-string: #CE9178; /* Strings (e.g., `"Hello, World!"`) */
+  --sh-number: #B5CEA8; /* Numbers (e.g., `42`, `3.14`) */
+  --sh-property: #DCDCAA; /* Object properties (e.g., `obj.property`) */
+  --sh-entity: #4EC9B0; /* Entities (e.g., HTML tags, JSX components) */
+  --sh-jsxliterals: #D7BA7D; /* JSX literals (e.g., `<div>`) */
+  --sh-sign: #D4D4D4; /* Signs (e.g., `=`, `+`, `-`) */
+  --sh-comment: #6A9955; /* Comments (e.g., `// This is a comment`) */
+  --sh-break: #D4D4D4; /* Line breaks */
+  --sh-space: #D4D4D4; /* Spaces */
+
+  /* Dark mode colors */
+  --sh-bg-dark: #151426; /* Dark background */
+  --sh-text-dark: #D4D4D4; /* Default text color in dark mode */
+  --sh-line-number-dark: #6A9955; /* Line number color in dark mode */
+
+  /* Light mode colors */
+  --sh-bg-light: #FFFFFF; /* Light background */
+  --sh-text-light: #000000; /* Default text color in light mode */
+  --sh-line-number-light: #6A9955; /* Line number color in light mode */
+}
+
+/* Code block container */
+pre code {
+  display: block;
+  padding: 1rem;
+  background: var(--sh-bg-dark); /* Dark background by default */
+  color: var(--sh-text-dark); /* Default text color in dark mode */
+  font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+/* Line numbers */
+.sh__line {
+  counter-increment: line;
+}
+
+.sh__line::before {
+  content: counter(line);
+  display: inline-block;
+  width: 2rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: var(--sh-line-number-dark); /* Line number color in dark mode */
+  user-select: none;
+}
+
+/* Token-specific styles */
+.sh__token--class {
+  color: var(--sh-class);
+}
+
+.sh__token--identifier {
+  color: var(--sh-identifier);
+}
+
+.sh__token--keyword {
+  color: var(--sh-keyword);
+  font-style: italic;
+}
+
+.sh__token--string {
+  color: var(--sh-string);
+}
+
+.sh__token--number {
+  color: var(--sh-number);
+}
+
+.sh__token--property {
+  color: var(--sh-property);
+}
+
+.sh__token--entity {
+  color: var(--sh-entity);
+}
+
+.sh__token--jsxliterals {
+  color: var(--sh-jsxliterals);
+}
+
+.sh__token--sign {
+  color: var(--sh-sign);
+}
+
+.sh__token--comment {
+  color: var(--sh-comment);
+  font-style: italic;
+}
+
+.sh__token--break {
+  color: var(--sh-break);
+}
+
+.sh__token--space {
+  color: var(--sh-space);
+}
+
+/* Light mode styles */
+@media (prefers-color-scheme: light) {
+  pre code {
+    background: var(--sh-bg-light); /* Light background */
+    color: var(--sh-text-light); /* Default text color in light mode */
+  }
+
+  .sh__line::before {
+    color: var(--sh-line-number-light); /* Line number color in light mode */
+  }
+
+  /* Adjust token colors for light mode */
+  .sh__token--class {
+    color: #2d5e9d; /* Darker blue for class names */
+  }
+
+  .sh__token--identifier {
+    color: #354150; /* Darker blue for identifiers */
+  }
+
+  .sh__token--keyword {
+    color: #1a73e8; /* Bright blue for keywords */
+  }
+
+  .sh__token--string {
+    color: #0d652d; /* Dark green for strings */
+  }
+
+  .sh__token--number {
+    color: #b32821; /* Dark red for numbers */
+  }
+
+  .sh__token--property {
+    color: #8250df; /* Purple for properties */
+  }
+
+  .sh__token--entity {
+    color: #2d5e9d; /* Darker blue for entities */
+  }
+
+  .sh__token--jsxliterals {
+    color: #8250df; /* Purple for JSX literals */
+  }
+
+  .sh__token--sign {
+    color: #5f6368; /* Gray for signs */
+  }
+
+  .sh__token--comment {
+    color: #6a9955; /* Green for comments */
   }
 }
 
