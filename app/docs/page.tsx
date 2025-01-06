@@ -1,7 +1,9 @@
+import { FeatureCard } from "@/components/feature-card"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Code2, Package, Zap } from 'lucide-react'
+import { Code2, Package, Zap, Copy } from 'lucide-react'
+
 
 export default function Page() {
   return (
@@ -25,34 +27,34 @@ export default function Page() {
             </TabsList>
             <TabsContent value="features" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <Zap className="h-4 w-4" />
-                      <h3 className="font-semibold">Modern React Hooks</h3>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Built for React 19 with the latest patterns and best practices
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <Code2 className="h-4 w-4" />
-                      <h3 className="font-semibold">Interactive Examples</h3>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Live code examples with Monaco Editor and Sandpack integration
-                    </p>
-                  </CardContent>
-                </Card>
+                <FeatureCard
+                  icon={Zap}
+                  title="Modern React Hooks"
+                  description="Built for React 19 with the latest patterns and best practices"
+                />
+                <FeatureCard
+                  icon={Code2}
+                  title="Interactive Examples"
+                  description="Live code examples with Monaco Editor and Sandpack integration"
+                />
+                <FeatureCard
+                  icon={Copy}
+                  title="Copy-Paste"
+                  description="Easily integrate hooks into your projects with simple copy and paste functionality"
+                />
+            
+          <FeatureCard
+            icon={Code2}
+            title="Well-Documented"
+            description="Each hook comes with clear documentation and usage examples."
+          />
+        
               </div>
             </TabsContent>
             <TabsContent value="tech" className="space-y-4">
               <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2">
+                <CardContent className="pt-6 dark:bg-gray-900 dark:border-gray-800">
+                  <div className="flex items-center gap-2 ">
                     <Package className="h-4 w-4" />
                     <h3 className="font-semibold">Technology Stack</h3>
                   </div>
@@ -69,7 +71,7 @@ export default function Page() {
                 </CardContent>
               </Card>
 
-              <div className="rounded-lg border bg-card p-4">
+              <div className="rounded-lg border bg-card p-4 dark:bg-gray-900 dark:border-gray-800">
                 <p className="text-sm text-card-foreground">
                   <span className="font-medium">Pro Tip:</span> Each hook comes with 
                   interactive examples powered by Monaco Editor and Sandpack, allowing 

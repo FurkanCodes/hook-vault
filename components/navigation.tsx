@@ -28,11 +28,13 @@ function Navigation({ className }: { className?: string }) {
   }, [isMenuOpen]);
 
   return (
-    <header className={cn("sticky top-0 z-50 w-full border-b  backdrop-blur", className)}>
-      <nav className="flex h-16 items-center justify-between">
+    <header className={cn("sticky top-0 z-50 w-full border-b backdrop-blur", className)}>
+      <nav className="flex h-16 items-center justify-between px-4 sm:px-6">
         {/* Logo */}
-        <Link href="/" className="text-base font-bold">
-          HookVault
+        <Link href="/" className="flex items-center">
+          <span className="text-base font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 ">
+            HV
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -46,17 +48,30 @@ function Navigation({ className }: { className?: string }) {
         </div>
 
         {/* Mobile Menu Button */}
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 -mr-2" aria-label="Toggle menu">
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="md:hidden p-2 -mr-2"
+          aria-label="Toggle menu"
+        >
           {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </nav>
 
       {/* Mobile Menu */}
-      <div className={cn("fixed inset-x-0 top-16 z-50 h-screen bg-background md:hidden transition-transform duration-300 ease-in-out", isMenuOpen ? "translate-y-0" : "-translate-y-full")}>
+      <div
+        className={cn(
+          "fixed inset-x-0 top-16 z-50 h-screen bg-background md:hidden transition-transform duration-300 ease-in-out",
+          isMenuOpen ? "translate-y-0" : "-translate-y-full"
+        )}
+      >
         <div className="border-b">
           <div className="flex flex-col space-y-4 p-6">
             {pathname.includes("docs") && (
-              <Link href="/" className="text-sm font-medium transition-colors hover:text-primary" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/"
+                className="text-sm font-medium transition-colors hover:text-primary"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Back
               </Link>
             )}
@@ -69,7 +84,12 @@ function Navigation({ className }: { className?: string }) {
       </div>
 
       {/* Backdrop */}
-      {isMenuOpen && <div className="fixed inset-0 top-16 z-40 bg-background/80 backdrop-blur-sm md:hidden" onClick={() => setIsMenuOpen(false)} />}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 top-16 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
     </header>
   );
 }
