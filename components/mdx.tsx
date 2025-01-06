@@ -1,3 +1,4 @@
+
 import { ExampleProps, ParameterProps, ParsedContent } from "@/types/types";
 import { motion } from "framer-motion";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
