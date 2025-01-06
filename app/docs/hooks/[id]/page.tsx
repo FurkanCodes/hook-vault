@@ -8,8 +8,8 @@ type Hook = {
   content: string;
 };
 
-export default async function HookPage(props: { params: { id: string } }) {
-  const params = props.params;
+export default async function HookPage(props: { params: Promise<{ id: string }> }) {
+  const params = (await props.params);
 
   const slugString = Array.isArray(params.id) ? params.id.join("/") : params.id;
 console.log("slugString",slugString
