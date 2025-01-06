@@ -1,0 +1,237 @@
+---
+title: "useFetch"
+date: "2024-01-06"
+description: "A custom hook for handling data fetching with loading and error states"
+category: "Data Fetching"
+tags:
+  - React Hooks
+  - Data Fetching
+  - Error Handling
+  - TypeScript
+---
+
+# useFetch
+
+A typed custom hook for handling data fetching operations with built-in loading and error states. This hook simplifies the process of making HTTP requests while maintaining proper state management throughout the request lifecycle.
+
+## Implementation
+
+<CodeBlock
+  code={`
+  interface FetchResponse<T> {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+}
+
+interface FetchOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  headers?: HeadersInit;
+  body?: BodyInit | null;
+}
+  
+  function useFetch<T>(url: string, options?: FetchOptions): FetchResponse<T> {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url, {
+          method: options?.method || 'GET',
+          headers: options?.headers,
+          body: options?.body,
+        });
+
+        if (!response.ok) {
+          throw new Error(\`HTTP error! status: \${response.status}\`);
+        }
+
+        const jsonData = await response.json();
+        setData(jsonData as T);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('An error occurred'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [url, options]);
+
+  return { data, loading, error };
+}`}
+  language="typescript"
+/>
+
+## Usage
+
+<ExampleBlock
+description="Fetch and display a list of todos"
+code={`interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+export default function TodoList() {
+  const { data, loading, error } = useFetch<Todo[]>(
+    'https://jsonplaceholder.typicode.com/todos'
+  );
+
+  return (
+    <div style={{ padding: '20px' }}>
+      {loading && <p>Loading todos...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {data && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {data.map(todo => (
+            <div 
+              key={todo.id}
+              style={{
+                padding: '10px',
+                border: '1px solid #ccc',
+                borderRadius: '4px'
+              }}
+            >
+              <h3>
+                {todo.completed ? '✓ ' : '○ '}
+                {todo.title}
+              </h3>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}`}
+/>
+
+## Parameters
+
+<ParameterList>
+  <Parameter 
+    name="url" 
+    type="string" 
+    required 
+    description="The URL to fetch data from" 
+  />
+  <Parameter 
+    name="options" 
+    type="FetchOptions" 
+    description="Optional configuration for the fetch request including method, headers, and body" 
+  />
+</ParameterList>
+
+## Return Values
+
+<ParameterList>
+  <Parameter 
+    name="data" 
+    type="T | null" 
+    description="The fetched data when the request is successful, null during loading or on error" 
+  />
+  <Parameter 
+    name="loading" 
+    type="boolean" 
+    description="Indicates whether a request is currently in progress" 
+  />
+  <Parameter 
+    name="error" 
+    type="Error | null" 
+    description="Error object if the request failed, null otherwise" 
+  />
+</ParameterList>
+
+## Live Playground
+
+<HookPlayground hook={{
+  code: `function useFetch<T>(url: string, options?: FetchOptions): FetchResponse<T> {
+    const [data, setData] = useState<T | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(url, {
+            method: options?.method || 'GET',
+            headers: options?.headers,
+            body: options?.body,
+          });
+
+          if (!response.ok) {
+            throw new Error(\`HTTP error! status: \${response.status}\`);
+          }
+
+          const jsonData = await response.json();
+          setData(jsonData as T);
+        } catch (err) {
+          setError(err instanceof Error ? err : new Error('An error occurred'));
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchData();
+    }, [url, options]);
+
+    return { data, loading, error };
+  }`,
+  examples: [{
+    code: `interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+export default function TodoList() {
+  const { data, loading, error } = useFetch<Todo[]>(
+    'https://jsonplaceholder.typicode.com/todos'
+  );
+
+  return (
+    <div style={{ padding: '20px' }}>
+      {loading && <p>Loading todos...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {data && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {data.map(todo => (
+            <div 
+              key={todo.id}
+              style={{
+                padding: '10px',
+                border: '1px solid #ccc',
+                borderRadius: '4px'
+              }}
+            >
+              <h3>
+                {todo.completed ? '✓ ' : '○ '}
+                {todo.title}
+              </h3>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}`
+  }]
+}} />
+
+## Best Practices
+
+<BestPractices>
+  <BestPracticeItem>Always provide type parameters for better type safety</BestPracticeItem>
+  <BestPracticeItem>Handle all possible states (loading, error, success) in the UI</BestPracticeItem>
+  <BestPracticeItem>Use appropriate error boundaries for error handling</BestPracticeItem>
+</BestPractices>
+
+## Performance Considerations
+
+<Performance>
+  <PerformanceItem>Requests are triggered on url or options changes</PerformanceItem>
+  <PerformanceItem>Consider memoizing options objects to prevent unnecessary re-renders</PerformanceItem>
+  <PerformanceItem>Large responses should be handled with pagination</PerformanceItem>
+</Performance>

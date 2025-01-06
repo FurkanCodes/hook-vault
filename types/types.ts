@@ -15,7 +15,7 @@ export interface Hook {
   content?: string;
 }
 
-export type HookCategory = "State" | "Effect" | "Performance" | "Form" | "Layout" | "Debug";
+export type HookCategory = "State" | "Effect" | "Performance" | "Form" | "Layout" | "Debug" | "Data Fetching";
 
 export interface Parameter {
   name: string;
