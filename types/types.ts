@@ -75,3 +75,20 @@ export interface ParsedContent {
   metadata: Metadata;
   content: string;
 }
+
+
+// types/nav.ts
+export interface NavItem {
+  title: string;
+  href: string;
+  disabled?: boolean;
+  external?: boolean;
+  label?: string;
+}
+
+
+
+export interface SidebarNavItem {
+  title: string;
+  items: NavItem[];
+}

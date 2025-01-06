@@ -31,7 +31,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <GrainyBackground>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              {/* <Navigation /> */}
+            
               {children}
             </div>
           </GrainyBackground>

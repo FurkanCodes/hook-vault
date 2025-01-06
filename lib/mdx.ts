@@ -1,6 +1,5 @@
 import { Metadata, ParsedContent } from "@/types/types";
-import fs from "fs";
-
+import fs from "fs/promises";
 import path from "path";
 
 function parseFrontmatter(fileContent: string): ParsedContent {
@@ -34,12 +33,13 @@ function parseFrontmatter(fileContent: string): ParsedContent {
   };
 }
 
-function getMDXFiles(dir: string): string[] {
-  return fs.readdirSync(dir).filter((file) => path.extname(file) === ".mdx");
+async function getMDXFiles(dir: string): Promise<string[]> {
+  const files = await fs.readdir(dir);
+  return files.filter((file) => path.extname(file) === ".mdx");
 }
 
-function readMDXFile(filePath: string): ParsedContent & { slug: string } {
-  const rawContent = fs.readFileSync(filePath, "utf-8");
+async function readMDXFile(filePath: string): Promise<ParsedContent & { slug: string }> {
+  const rawContent = await fs.readFile(filePath, "utf-8");
   const { metadata, content } = parseFrontmatter(rawContent);
   const slug = path.basename(filePath, path.extname(filePath));
 
@@ -50,21 +50,16 @@ function readMDXFile(filePath: string): ParsedContent & { slug: string } {
   };
 }
 
-export function getAllHooks() {
+export async function getAllHooks(): Promise<Array<ParsedContent & { slug: string }>> {
   const postsDirectory = path.join(process.cwd(), "content");
-  const mdxFiles = getMDXFiles(postsDirectory);
+  const mdxFiles = await getMDXFiles(postsDirectory);
 
-  return mdxFiles.map((file) => {
-    return readMDXFile(path.join(postsDirectory, file));
-  });
-}
-export function getFormattedHooks() {
-  const mdxHooks = getAllHooks();
+  const hooks = await Promise.all(
+    mdxFiles.map(async (file) => {
+      const filePath = path.join(postsDirectory, file);
+      return await readMDXFile(filePath);
+    })
+  );
 
-  return mdxHooks.map((hook) => ({
-    id: hook.slug,
-    name: hook.metadata.title,
-    category: hook.metadata.category,
-    description: hook.metadata.description,
-  }));
+  return hooks;
 }
